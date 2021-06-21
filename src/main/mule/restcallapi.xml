@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="d985a83c-41e7-4b85-973b-c1f6ee6ee8f7" >
+		<http:listener-connection host="0.0.0.0" port="8082" />
+	</http:listener-config>
+	<flow name="restcallapiFlow" doc:id="56447d77-f14b-4294-8563-4de8b68ad45e" >
+		<http:listener doc:name="Listener" doc:id="77844c1c-23fd-45c5-9350-17a9b3aa170c" config-ref="HTTP_Listener_config" path="/insurence"/>
+		<ee:transform doc:name="Transform Message" doc:id="01ba92fa-feb6-4d9e-81dd-f172d513e370" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+
+{
+    "policyholder": "prowe",
+    "Id": "XYZ56789",
+    "insuranceparty": [
+        {
+            "Inssysname": "LIC",
+			"Code": "yt07",
+                "policyprice": "5000",
+            
+            "validity": {
+                "policyvalidity":"8M"
+                
+            }
+},
+             
+       {
+            "Inssysname": "PubFund",
+			"Code": "yt07",
+                "policyprice": "8000",
+            
+            "validity": {
+                "policyvalidity":"10M"
+                
+            }
+},
+{
+            "Inssysname": "LIC",
+			"Code": "yt02",
+                "policyprice": "5000",
+            
+            "validity": {
+                "policyvalidity":"8M"
+                
+            }
+},
+{
+            "Inssysname": "PubFund",
+			"Code": "yt05",
+                "policyprice": "8000",
+            
+            "validity": {
+                "policyvalidity":"9M"
+                
+            }
+},
+{
+            "Inssysname": "PubFund",
+			"Code": "yt08",
+                "policyprice": "10000",
+            
+            "validity": {
+                "policyvalidity":"10M"
+                
+            }
+}]
+
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="85af1acf-e184-4791-b93b-635436fe5406" type="ANY"/>
+		</error-handler>
+	</flow>
+</mule>
